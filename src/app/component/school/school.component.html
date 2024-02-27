@@ -1,0 +1,12 @@
+<div class="container">
+    <app-title [title] = "titulo"></app-title>
+    <p class="descricao">{{ descricao }}</p>
+
+    <div class="img">
+        <img [src]="img" alt="">
+    </div>
+
+    <div class="codigo">
+        <ng-content ></ng-content>
+    </div>
+</div>

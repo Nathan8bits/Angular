@@ -1,0 +1,565 @@
+A importancia da tipagem no typescript
+
+type hero = {
+	nome: string;
+	vulgo: string;
+	telefone: string;
+};
+
+function ligarPara(heroi: hero) {
+	console.log("Ligando para: " + heroi.telefone);
+}
+
+ligarPara ({
+	nome: "felipe",
+	vulgo: "capitão america",
+	//telefone: "11 31713888",
+});
+
+//obs: dará um erro em tempo de desenvolvimento pois o tipo foi definido "hero" foi definido.
+
+function ligarPara(heroi: hero): string {
+	return ("Ligando para: " + heroi.telefone);
+}
+//obs: dessa forma o tipo da função tbm foi definido
+//obs: :any --> tipo qualquer
+
+__________________________________________________________
+
+instalando o typescript
+
+instalando globalmente:
+	npm install -g typescript
+
+instalando como dependência de um projeto:
+	npm init -y //criando um arquivo node(package.json)
+	npm install typescript -D // "-D" signfica dependencia de desevolvedor, tempo de desenvolvimento
+		//cria o arquivo package-lock.json
+//criar um arquivo com extensão .ts
+___________________________________________________________
+
+Como rodar typescript
+
+npx tsc src/index.ts //transpilação do arquivo Ts para um arquivo Js na mesma pasta
+//obs: arquivos .js são executados da seguinte maneira:
+//node src/index.js
+
+Configurando tsc:
+npx tsc --init //cria um arquivo tsconfig.json 
+//typescript.orge/tools/tsConfig reference : mostra oq é possivel habilitar nas configurações
+"rootDir" : "./src", //pasta dos arquivos Ts
+"outDir" : "./build",  //pasta dos arquivos js ja transpilados
+
+Após isso basta usar: "npx tsc" para que seja lida as configurações e os arquivos nas pasta indicadas sejam transpilados
+Ainda são necessários dois comandos para rodar o arquivo, para evitar isso vá em "package.json" e adicione o seguinte dentro
+das chaves do "scripts": "start":"npx tsc && node build/index.js", após isso basta usar o comando, no terminal: "npm run start".
+
+________________________________________________________________
+
+Tipos primitivos
+
+let ligado : boolean = false; //dessa forma o tipo fica fixo
+let altura : number; //valores numericos seja int ou float
+let nome : string;
+
+let nulo : null; //somente nulo
+let indefinido : undefined; //nao definido
+
+:any //util para funções que retornem tipos imprevisiveis
+:void //muito usadas em funções sem retorno
+
+__________________________________________________________________
+
+Tipo objeto
+
+//objeto- sem previsibilidade
+let produto : object = {
+	nome = "felipe",
+	idade = 17,
+};
+
+
+//objeto tipado- tipos definidos
+type hero = {
+	nome: string;
+	vulgo: string;
+	telefone: string;
+};
+
+let thor : hero = {
+	nome: "Thor",
+	vulgo: "deus do trovão",
+	telefone: "11 31713888",
+}
+
+___________________________________________________________
+
+Array
+
+
+let dados: string[] = ["felipe", "ana", "marcia"];
+let dados: Array<string> = ["felipe", "ana", "marcia"];
+
+let infos: (string | number)[] = ["felipe", 30]; //array multTypes
+
+___________________________________________________________
+
+Tuplas: são array multTypes mas que aceitam os valores somente em uma ordem especifíca
+
+let boleto : [string, number, number] = ["água conta", 190.90, 9199999]
+_____________________________________________________________
+
+Métodos de array
+
+dados.map();
+dados.reduce();
+dados.pop(); //remove o último elemento do array
+dados.filter();
+
+____________________________________________________________
+
+Tipo date
+
+let aniversário: Date = new Date("2022-12-01 05:00");  
+//padrão americano ano-mes-dia
+
+__________________________________________________________
+
+Funções
+
+Function addNumber(x: number, y: number): number {
+	return x + y;
+}
+
+let soma: number = addNumber(4, 7); //soma só pode ser do tipo number ou semelhante (any)
+
+Function addNumber(x: number, y: number): number | string {
+	return x + y;
+} //util em busca a banco de dados onde o tipo do retorno não é conhcido ou pode ser nulo
+
+____________________________________________________________
+
+interfaces x types: eles têm comportamentos semelhantes porém interface é recomendada para definir classes
+	e o type para definir objetos.
+
+type robot1 = {
+	id: number | string;
+	name: string;
+};
+
+interface robot = {
+	readonly id: number | string; //readonly define variavel de leitura apenas sendo sua atribuição no constructor
+	name: string;
+	sayHello():string;
+}
+
+class Pessoa implements robot2 {
+	readonly id: number | string; //readonly define variavel de leitura apenas sendo sua atribuição no constructor
+	name: string; //name?: string o nome fica opcional
+	
+	constructor(id: number | string, name: string;) {
+		this.id = id;
+		this.name = name;
+	}
+	
+	sayHello():string {
+		return `hello ${this.name}`;
+	}
+}
+
+let p = new Pessoa(12, "natan");
+console.log(p.sayHello());
+
+___________________________________________________________
+
+Modificadores de acesso
+
+private, public, protected
+
+_____________________________________________________________
+
+Herança
+
+class personagem {
+	name?: string; //esse atributo não é obrigatório
+	skill: number;
+	stregth: number;
+	
+	constructor(name?: string, skill: number, stregth: number) {
+		this.name = name;
+		this.skil = skill;
+		this.stregth = stregth;
+	}
+}
+
+class magician extends personagem  {
+	magicPoints: number;
+	
+	constructor(name: string,
+		    skill: number, 
+		    stregth: number, 
+		    magicPoints: number
+	) {
+ 		super(name, skil, stregth);
+		this.magicPoints = magicPoints;
+	}
+
+}
+_____________________________________________________________
+
+Generics
+
+function concatArray(...itens: any[]): any[]{
+	return new Array().concat(...itens);
+}
+//nesse caso o tipo de return será any quebrando assim a tipagem
+
+const numArray = concactArray([1, 5], [3]); //numArray = [1, 5, 3]
+const stgArrayy = concatArray(["felipe", "ana"], ["roberto"]);
+
+numArray.push("marcia"); //numarray = [1, 5, 3, "marcia"]
+
+...............................................
+Solução
+
+function concatArray<T>(...itens: T[]): T[]{
+	return new Array().concat(...itens);
+}
+
+const numArray = concactArray<number[]>([1, 5], [3]); //numArray = [1, 5, 3]
+const stgArrayy = concatArray<string[]>(["felipe", "ana"], ["roberto"]);
+
+Dessa forma é posivel escolher qual tipo uma função vai retornar
+e receber o resultado de uma mesma função em variaveis de tipos diferentes.
+
+_______________________________________________________________
+
+Trabalhando com o Ts Node Dev
+
+Como evitar ter que gerar builds sempre que precisar executar o arquivo Ts?
+
+npm install ts-node-dev -D //instala um servidor local que roda .ts
+
+Adicione o seguinte comando nas chaves do "script" do package.json:
+	"start:dev" : "ts-node-dev --respawn --transpile-only src/main.js",
+Após isso basta usar o comando: npm run start:dev
+
+______________________________________________________________
+
+Decorators
+
+	Para usa-lo habilite no tsconfig: "experimentalDecorators" : "true";
+	Decore um método que será disparado sempre que uma condição for satisfeita.
+
+function apiVersion(version: string) {
+	return (target: any)=> {
+		Object.assign(target.protoype, {__version: version});
+	};
+}
+
+
+@apiVersion("1.10") //o objeto da linha abaixo será o target (alvo)
+class Api {}
+
+const api = new Api();
+console.log(api.__version); //apiVersion adiciona uma propriedade a classe Api
+
+//use npm run start:dev
+
+.........................................................
+
+function minLength(length: number) {
+	return (target: any, key: string) => {
+		let _value =  target[key];
+
+		const getter = () => _value;
+		const setter = (value: string) => {
+			if(value.length < length) {
+				throw new Error(`Tamanho menor do que &{length}`); 
+			} else {
+				_value = value;
+			};
+
+		Object.defineProperty(target, key, {
+			get: getter, //get  e set são metodos usados sempre que atribuimos ou lemos as propriedades dos objetos
+			set: setter, //sobrescrevendo metodos
+			});
+		}
+	};
+}
+
+
+class Api {
+	@minLength(3) //faz uma verificação do valor atribuido para o atributo logo abaixo
+	name: string;
+
+	constructor(name: string) {
+		this.name = name;
+	}
+}
+
+const api = new Api("produtos");
+
+______________________________________________________________
+
+
+app.component.ts: 
+
+```
+
+import { Component } from '@angular/core';
+import { bootstrapApplication } from '@angular/platform-browser';
+import 'zone.js';
+
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  templateUrl: './',
+  templateUrls: ['./'],
+  
+/*
+  template: `
+    <h1>Hello from {{ name }}!</h1>
+    <a target="_blank" href="https://angular.dev/overview">
+      Learn more about Angular
+    </a>
+  `,
+*/
+})
+export class App {
+  name = 'Angular';
+}
+
+bootstrapApplication(App);
+
+
+
+os componentes criados devem ser importados no app.module.ts
+e adicionados em "declaritions: [...],"
+
+-------------------------------------------------------------
+
+No html no componente Pai
+
+<Component-filho [label] = "atributoPai"> </Component-filho>
+// ou label = {{ atributoPai }}.   {{}} ou [] --> uma propriedade {'hello'} --> um valor
+//obs:AtributoPai é uma tributo declarado e com valor atribuido na classe Pai.
+Dessa forma é possível escolher quais atributos os pais passam para os filhos.
+
+no html do componente Filho
+```
+<div>
+   <my-button>{{ label }}</my-button>
+</div>
+
+
+```
+
+no Filho.component.ts
+```
+import { Component, Input} from '@angular/core';
+
+@Component({
+  selector: 'my-button',
+  templateUrl: './button.component.html',
+  styleUrls: '[]',
+})
+export class Button {
+  @Input() label: string = '';
+}
+
+```
+
+
+_______________________________________________
+data biding
+
+label = {{atributo}} //interpolação. "atributo" é uma propriedade(variavel) da classe de componente no .ts
+label = "noticia" //ou label = {'texto literal'} ou label = {2}
+
+[label] = "atributo"  //property binding
+[label] = "'texto literal'"
+
+_______________________________________________
+
+event binding: associação de eventos
+
+ao declarar um evento em uma classe para passa-lo para o template (html) usamos:
+
+<button (click) = "eventoDaClasse()"></button> //event binding
+
+-------------------------------------------------
+two way data binding. Diretivas [()]
+Usado em formulario. html -> classe e da classe -> html
+Caso dois elementos estejam usando o mesmo atributo essa comunicação ocorre automaticamente.
+
+
+import FormsModule em app.module.ts:
+
+import { FormsModule } from '@angular/forms'
+imports: [
+    BrowserModule,
+    FormsModule
+    ...
+  ],
+
+
+
+	Os códigos abaixo são equivalentes:
+	```
+		<input type="text" 
+    			[(ngModel)] = "placeholder"/>
+		<p>{{ placeholder }} a</p>
+	´´´
+
+	```
+		<input type="text" 
+    			[(ngModel)] = "placeholder"/> 
+			//ocorre um aviso, acredito que seja por causa das
+			// versões do angula pedindo atualização.
+		<p>{{ placeholder }} a</p>
+	´´´
+
+
+
+_____________________________________________________________
+
+np help //np é o cli do angular
+
+erro do windows
+
+No PowerShell execute:
+
+Get-ExecutionPolicy -List  //observe a opcao currentuser se estar restricted
+
+Caso esteja restrited
+npm uninstall -g @angular/cli //no terminal VSCode
+npm cache clean --force
+npm cache verify
+
+
+no power shell:
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUse
+npm install -g @angular/cli@14.1.2  //ainda no power sheel
+
+_____________________________________________________________
+
+
+ng new life-cycle //criar um novo projeto. use esse comando dentro da pasta desejado
+
+//obs: a pasta vscode contem arquivos de configuração para rodar os arquivos localmente
+
+//environments onde ficam variaveis globais
+//assets onde ficam as fotos, audio e demais arquivos
+
+ng generate component novoComponente
+//ng g c novoComponente -- esses comandos sao equivalentes
+
+ngOnInit(): void {
+//escreva algo que será executado assim que o componente for iniciado
+}
+
+________________________________________________________
+
+life cycle hook: estagios do ciclo de vida. Sendo 8 no total.
+
+ngOnInit(): void {}   //é executado na hora que o componente é inicializado
+ngOnChange(): void {} //é executado sempre que um atributo é modificado pelo input(componente pai)
+ngDoCheck(): void {}  //e seus 4 subEventos
+
+Esses lifes hooks devem ser implementados, pois trata-se de uma interface
+
+```
+import { 
+        Component, 
+        OnChanges, 
+        OnInit,
+        DoCheck,
+        AfterContentChecked,
+        AfterContentInit,
+        AfterViewChecked,
+        AfterViewInit 
+} from '@angular/core';
+
+@Component({
+  selector: 'app-title',
+  templateUrl: './title.component.html',
+  styleUrls: ['./title.component.css]
+})
+export class TitleComponent //no nome da classe aperte ctrl + . e ctrl + . até implementar todas as interfaces
+implements OnInit, 
+           OnChanges,
+           DoCheck,
+           AfterContentChecked,
+           AfterContentInit,
+           AfterViewChecked,
+           AfterViewInit 
+{
+
+  @Input() nome: string = ''
+
+  constructor(){
+    console.log("construtor")
+  }
+
+
+  ngOnInit(): void {
+    console.log("OnInit")
+  }
+
+  ngOnChanges():void {
+    console.log("OnChange")  //sempre que algum atributo ser alterado por input
+  }
+
+  //checked -> content -> view
+
+  ngDoCheck(): void {
+    console.log("DoCheck")
+  }
+
+  ngAfterContentChecked(): void {
+    console.log("AfterContentChecked")
+  }
+
+  ngAfterViewChecked(): void {
+   console.log("AfterViewChecked")
+  }
+
+  //apenas uma vez. Quando o conteudo é iniciado
+  ngAfterContentInit(): void {
+    console.log("AfterContentInit")
+  }
+
+  //depois da inicialização da view
+  ngAfterViewInit(): void {
+    console.log("AfterViewInit")
+  }
+
+}
+
+__________________________________________________________
+
+OnDestruy
+
+//html do componente pai
+//isAliveCheckSample é uma propriedade do componente pai
+//*ngIf é por default "true", caso não seja indicado. 
+//É a propriedade que diz se o componente deve ser exibido
+ 
+<app-check-sample *ngIf="isAliveCheckSample"></app-check-sample>
+<button (click)="disposeCheckSample()">Destruir</button>
+
+``` .ts do componente pai: 
+export class AppComponent {
+
+  isAliveCheckSample: boolean = true
+
+  disposeCheckSample() {
+    this.isAliveCheckSample = false 
+  }
+}
+```
+
+
+
+

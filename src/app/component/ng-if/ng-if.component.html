@@ -1,0 +1,9 @@
+<p>A div amarela esa contida pela div preta. O ngIf esta associado a uma 
+    propriedade da classe e o button ativa um método que modifica o valor dessa propriedade.
+</p>
+
+<div class="container" >
+    <div class="lampada" *ngIf="isAliveLampada"></div>
+</div>
+
+<button (click) = "apagar()">apagar</button>

@@ -1,0 +1,9 @@
+<input type="text" 
+    [(ngModel)] = "novoProduto"/>
+<button (click) = "adicionar()">adicionar</button>
+<ul>
+    <li *ngFor="let p of produto; let i = index">
+        {{ i+1 }} - {{ p }} 
+        <button (click) = "remover(i)">remover</button>
+    </li>
+</ul>
