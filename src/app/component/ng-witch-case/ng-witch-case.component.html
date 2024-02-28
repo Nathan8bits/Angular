@@ -1,0 +1,20 @@
+<p>escolha um tipo de usuario:</p>
+<ul>
+    <li>user;</li>
+    <li>adim;</li>
+    <li>superuser.</li>
+</ul>
+
+<input [(ngModel)]="digitando" type="text">
+
+<button (click)="definirMenuType()" >OK</button>
+<div [ngSwitch] = "menuType" >
+    <div *ngSwitchDefault >
+        <p>isso será exibido para os usuários tipo 'user'</p>
+    </div>
+    <div *ngSwitchCase="'admin'">
+        <p>isso será exibido para os usuários tipo 'admin'</p>
+    </div>
+    <div *ngSwitchCase="'superuser'">
+        <p>isso será exibido para os usuários tipo 'superuser'</p></div>
+</div>

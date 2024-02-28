@@ -11,6 +11,7 @@ import { SchoolComponent } from './component/school/school.component';
 import { NgIfComponent } from './component/ng-if/ng-if.component';
 import { NgForComponent } from './component/ng-for/ng-for.component';
 import { ReatividadeComponent } from './component/reatividade/reatividade.component';
+import { NgWitchCaseComponent } from './component/ng-witch-case/ng-witch-case.component';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { ReatividadeComponent } from './component/reatividade/reatividade.compon
     SchoolComponent,
     NgIfComponent,
     NgForComponent,
-    ReatividadeComponent
+    ReatividadeComponent,
+    NgWitchCaseComponent
   ],
   imports: [
     BrowserModule,
